@@ -73,4 +73,37 @@ app.get('/api/read', (req, res) => {
   })();
 });
 
+app.put('/api/update/:id', (req, res) => {
+  (async () => {
+    try {
+      const document = db.collection('products').doc(req.params.id);
+      await document.update({
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+      });
+
+      return req.status(200).send('Product is updated');
+    } catch (error) {
+      console.log(error);
+
+      return res.status(500).send(error);
+    }
+  })();
+});
+
+app.delete('/api/delete/:id', (req, res) => {
+  (async () => {
+    try {
+      const document = db.collection('products').doc(req.params.id);
+
+      await document.delete();
+      return res.status(200).send('Product is deleted');
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
+    }
+  })();
+});
+
 exports.app = functions.https.onRequest(app);
